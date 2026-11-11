@@ -1,0 +1,33 @@
+comparison,week,quantity,est,low,high,n
+newer regimens vs zidovudine alone,20,natural course (change on zidovudine alone),-17.066,-25.483,-8.769,2139
+newer regimens vs zidovudine alone,20,before-after change in the treated,33.343,27.214,39.556,2139
+newer regimens vs zidovudine alone,20,"effect, difference in means",50.409,39.683,60.999,2139
+newer regimens vs zidovudine alone,20,"effect, ANCOVA",49.066,38.952,59.197,2139
+newer regimens vs zidovudine alone,96,natural course (change on zidovudine alone),-77.498,-93.016,-61.213,1342
+newer regimens vs zidovudine alone,96,before-after change in the treated,-10.357,-19.700,-1.387,1342
+newer regimens vs zidovudine alone,96,"effect, difference in means",67.142,47.180,85.953,1342
+newer regimens vs zidovudine alone,96,"effect, ANCOVA",64.923,45.344,82.984,1342
+zidovudine + didanosine vs zidovudine alone,20,natural course (change on zidovudine alone),-17.066,-26.295,-8.067,1054
+zidovudine + didanosine vs zidovudine alone,20,before-after change in the treated,54.448,41.847,67.205,1054
+zidovudine + didanosine vs zidovudine alone,20,"effect, difference in means",71.514,55.491,86.616,1054
+zidovudine + didanosine vs zidovudine alone,20,"effect, ANCOVA",69.676,55.672,84.276,1054
+zidovudine + didanosine vs zidovudine alone,96,natural course (change on zidovudine alone),-77.498,-93.498,-60.741,654
+zidovudine + didanosine vs zidovudine alone,96,before-after change in the treated,-6.904,-23.165,8.863,654
+zidovudine + didanosine vs zidovudine alone,96,"effect, difference in means",70.595,49.166,93.021,654
+zidovudine + didanosine vs zidovudine alone,96,"effect, ANCOVA",69.042,47.866,91.155,654
+zidovudine + zalcitabine vs zidovudine alone,20,natural course (change on zidovudine alone),-17.066,-25.808,-7.862,1056
+zidovudine + zalcitabine vs zidovudine alone,20,before-after change in the treated,19.263,10.183,28.910,1056
+zidovudine + zalcitabine vs zidovudine alone,20,"effect, difference in means",36.329,23.861,49.112,1056
+zidovudine + zalcitabine vs zidovudine alone,20,"effect, ANCOVA",36.203,24.578,47.945,1056
+zidovudine + zalcitabine vs zidovudine alone,96,natural course (change on zidovudine alone),-77.498,-92.058,-61.844,658
+zidovudine + zalcitabine vs zidovudine alone,96,before-after change in the treated,-4.356,-20.264,12.089,658
+zidovudine + zalcitabine vs zidovudine alone,96,"effect, difference in means",73.142,50.436,95.397,658
+zidovudine + zalcitabine vs zidovudine alone,96,"effect, ANCOVA",70.137,47.899,91.534,658
+didanosine vs zidovudine alone,20,natural course (change on zidovudine alone),-17.066,-26.164,-8.219,1093
+didanosine vs zidovudine alone,20,before-after change in the treated,26.857,17.187,36.377,1093
+didanosine vs zidovudine alone,20,"effect, difference in means",43.923,31.239,56.441,1093
+didanosine vs zidovudine alone,20,"effect, ANCOVA",41.851,30.519,53.866,1093
+didanosine vs zidovudine alone,96,natural course (change on zidovudine alone),-77.498,-92.366,-61.251,672
+didanosine vs zidovudine alone,96,before-after change in the treated,-19.393,-33.518,-4.926,672
+didanosine vs zidovudine alone,96,"effect, difference in means",58.105,36.638,77.827,672
+didanosine vs zidovudine alone,96,"effect, ANCOVA",55.269,33.351,75.597,672

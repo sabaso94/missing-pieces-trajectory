@@ -1,0 +1,16 @@
+group,week,n,mean_cd4,low,high
+zidovudine alone,0,532,353.205,344.185,362.839
+zidovudine alone,20,532,336.139,326.064,347.574
+zidovudine alone,96,321,287.617,270.359,306.618
+newer regimens,0,1607,349.606,343.604,355.389
+newer regimens,20,1607,382.950,375.570,390.232
+newer regimens,96,1021,341.447,330.928,352.213
+zidovudine + didanosine,0,522,348.724,337.618,359.523
+zidovudine + didanosine,20,522,403.172,388.818,416.235
+zidovudine + didanosine,96,333,341.252,323.203,360.192
+zidovudine + zalcitabine,0,524,352.775,343.171,363.099
+zidovudine + zalcitabine,20,524,372.038,360.711,384.421
+zidovudine + zalcitabine,96,337,354.819,336.850,372.395
+didanosine,0,561,347.467,338.317,356.401
+didanosine,20,561,374.324,362.687,387.060
+didanosine,96,351,328.792,310.375,349.428
