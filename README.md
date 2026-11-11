@@ -64,7 +64,7 @@ Change in CD4 count (cells/mm³) against zidovudine alone:
 - **Without the newer regimens, CD4 counts fall.** On zidovudine alone they drop by 17 cells/mm³ by week 20 and by 78 by week 96. This is the natural course the newer regimens are measured against.
 - **The change in treated patients is not the effect.** Patients on the newer regimens gain 33 cells/mm³ by week 20, but the effect is 49–50: their counts would have fallen without treatment. At week 96 the gap is starker. Treated patients have *lost* 10 cells/mm³, which on its own reads as treatment failure, yet they are 65–67 cells/mm³ better off than without the newer regimens.
 - **The regimens differ at week 20** (from +36 for zidovudine with zalcitabine to +70 for zidovudine with didanosine) and are close at week 96 (+55 to +70).
-- **Adjustment barely moves a randomised estimate.** ANCOVA and the difference in means agree within 3 cells/mm³ everywhere; adjustment narrows the interval slightly.
+- **Adjustment barely moves a randomised estimate.** ANCOVA and the difference in means agree within 3 cells/mm³ everywhere; adjustment narrows the interval slightly in seven of the eight comparisons.
 
 Week 96 counts only the patients seen at week 96; E3 asks whether that matters.
 
@@ -76,46 +76,46 @@ In routine care, sicker patients are often treated differently. To mimic that, t
 - **all but baseline CD4** (the strongest confounder is hidden);
 - **all but baseline CD4, Karnofsky score and symptoms.**
 
-Coverage is of the trial's answer by the 95% interval. Because each sample comes from the same patients as the trial's answer, the interval is narrowed by the finite-population factor √(1 − n/2,139); without confounding (γ = 0) coverage is then 0.91–0.98, as it should be.
+Coverage is of the trial's answer by the 95% interval. Each sample comes from the same patients as the trial's answer, so a sample's estimate varies around it with variance se² − se²(trial) rather than se² (approximately, when the trial's estimate is the more efficient one); the intervals use that variance. Without confounding (γ = 0), coverage is 0.92–0.97 for every estimator. The γ = 0 column also shows the trial's own chance imbalance: on all 2,139 patients the difference in means is 1.3 above ANCOVA, so the +1.1 to +1.5 there is not estimator bias.
 
 Bias in cells/mm³ (SD across samples; coverage), all covariates measured:
 
 | Estimator | γ = 0 | γ = 0.5 | γ = 1 | γ = 2 |
 |---|---|---|---|---|
-| difference in means | +1.5 (4.6; 0.96) | +7.3 (7.0; 0.85) | +12.3 (7.5; 0.71) | +16.5 (7.1; 0.50) |
-| ANCOVA | +0.2 (4.3; 0.96) | +0.6 (7.3; 0.96) | +1.5 (8.7; 0.95) | +2.7 (10.5; 0.95) |
-| IPW | +0.2 (4.3; 0.98) | -0.2 (7.5; 0.98) | -0.3 (10.5; 0.97) | +1.6 (16.9; 0.91) |
-| AIPW, linear | +0.2 (4.4; 0.96) | -0.4 (8.5; 0.97) | -0.4 (13.2; 0.95) | -1.9 (23.1; 0.93) |
-| AIPW, boosting | +4.2 (5.8; 0.91) | +5.0 (13.1; 0.93) | +4.0 (22.1; 0.96) | +5.8 (40.5; 0.94) |
+| difference in means | +1.5 (4.6; 0.95) | +7.3 (7.0; 0.85) | +12.3 (7.5; 0.70) | +16.5 (7.1; 0.50) |
+| ANCOVA | +0.2 (4.3; 0.94) | +0.6 (7.3; 0.95) | +1.5 (8.7; 0.96) | +2.7 (10.5; 0.96) |
+| IPW | +0.2 (4.3; 0.97) | -0.2 (7.5; 0.98) | -0.3 (10.5; 0.98) | +1.6 (16.9; 0.94) |
+| AIPW, linear | +0.2 (4.4; 0.95) | -0.4 (8.5; 0.97) | -0.4 (13.2; 0.96) | -1.9 (23.1; 0.96) |
+| AIPW, boosting | +2.4 (4.4; 0.92) | +3.1 (7.5; 0.93) | +4.7 (9.5; 0.93) | +6.4 (14.1; 0.92) |
 
 Baseline CD4 hidden:
 
 | Estimator | γ = 0 | γ = 0.5 | γ = 1 | γ = 2 |
 |---|---|---|---|---|
-| difference in means | +1.5 (4.6; 0.96) | +7.3 (7.0; 0.85) | +12.3 (7.5; 0.71) | +16.5 (7.1; 0.50) |
-| ANCOVA | +1.2 (4.4; 0.97) | +9.6 (7.4; 0.79) | +18.0 (8.7; 0.48) | +31.0 (10.0; 0.11) |
-| IPW | +1.2 (4.4; 0.97) | +9.0 (7.3; 0.82) | +16.7 (8.8; 0.56) | +29.9 (11.7; 0.27) |
-| AIPW, linear | +1.1 (4.6; 0.97) | +8.5 (7.9; 0.86) | +15.5 (10.1; 0.69) | +25.5 (17.1; 0.54) |
-| AIPW, boosting | +3.5 (6.3; 0.93) | +12.4 (12.6; 0.83) | +20.8 (19.7; 0.75) | +38.8 (31.4; 0.70) |
+| difference in means | +1.5 (4.6; 0.95) | +7.3 (7.0; 0.85) | +12.3 (7.5; 0.70) | +16.5 (7.1; 0.50) |
+| ANCOVA | +1.2 (4.4; 0.96) | +9.6 (7.4; 0.79) | +18.0 (8.7; 0.49) | +31.0 (10.0; 0.12) |
+| IPW | +1.2 (4.4; 0.97) | +9.0 (7.3; 0.82) | +16.7 (8.8; 0.58) | +29.9 (11.7; 0.30) |
+| AIPW, linear | +1.1 (4.6; 0.96) | +8.5 (7.9; 0.86) | +15.5 (10.1; 0.72) | +25.5 (17.1; 0.60) |
+| AIPW, boosting | +2.3 (4.7; 0.95) | +9.6 (7.5; 0.80) | +17.1 (8.8; 0.55) | +29.4 (11.4; 0.29) |
 
 Baseline CD4 hidden, and Karnofsky score and symptoms left out of the adjustment:
 
 | Estimator | γ = 0 | γ = 0.5 | γ = 1 | γ = 2 |
 |---|---|---|---|---|
-| difference in means | +1.5 (4.6; 0.96) | +7.3 (7.0; 0.85) | +12.3 (7.5; 0.71) | +16.5 (7.1; 0.50) |
-| ANCOVA | +1.3 (4.4; 0.97) | +7.6 (7.0; 0.84) | +12.9 (7.5; 0.67) | +17.8 (7.3; 0.43) |
-| IPW | +1.2 (4.4; 0.97) | +7.7 (7.0; 0.84) | +13.0 (7.5; 0.68) | +17.9 (7.2; 0.45) |
-| AIPW, linear | +1.1 (4.5; 0.96) | +7.8 (7.6; 0.85) | +13.5 (8.5; 0.72) | +18.0 (8.9; 0.51) |
-| AIPW, boosting | +4.4 (6.5; 0.89) | +12.7 (12.1; 0.82) | +17.9 (14.2; 0.76) | +21.1 (13.6; 0.70) |
+| difference in means | +1.5 (4.6; 0.95) | +7.3 (7.0; 0.85) | +12.3 (7.5; 0.70) | +16.5 (7.1; 0.50) |
+| ANCOVA | +1.3 (4.4; 0.96) | +7.6 (7.0; 0.83) | +12.9 (7.5; 0.66) | +17.8 (7.3; 0.42) |
+| IPW | +1.2 (4.4; 0.97) | +7.7 (7.0; 0.84) | +13.0 (7.5; 0.68) | +17.9 (7.2; 0.44) |
+| AIPW, linear | +1.1 (4.5; 0.96) | +7.8 (7.6; 0.85) | +13.5 (8.5; 0.73) | +18.0 (8.9; 0.51) |
+| AIPW, boosting | +2.6 (4.7; 0.94) | +8.8 (7.4; 0.81) | +14.1 (7.7; 0.65) | +18.6 (7.4; 0.42) |
 
 ![E2 bias and spread against the strength of confounding](figures/e2_confounding.png)
 
 - **Without adjustment, confounding shows.** The difference in means overstates the effect by 7 to 17 cells/mm³ as γ rises, and its interval covers the trial's answer in only half the samples at γ = 2.
-- **With the confounders measured, adjustment recovers the trial's answer.** ANCOVA, IPW and linear AIPW stay within 3 cells/mm³ of it at every γ, with coverage 0.91–0.98.
+- **With the confounders measured, adjustment recovers the trial's answer.** ANCOVA, IPW and linear AIPW stay within 3 cells/mm³ of it at every γ, with coverage 0.94–0.98.
 - **Weighting pays for poor overlap.** At γ = 2 few sick patients are untreated, and the weights put much on them. The SD across samples is 10.5 for ANCOVA, 16.9 for IPW and 23.1 for linear AIPW. Double robustness protects against a wrong model, not against too little data on one side.
-- **Flexible models do not help on a few hundred patients.** AIPW with boosted trees is 4–6 cells/mm³ too high at every γ, even without confounding, and its SD reaches 40.5 at γ = 2.
-- **With the main confounder hidden, every adjustment fails, and adjusting makes it worse than not adjusting.** At γ = 2 the adjusted estimates are 26–39 cells/mm³ too high against 17 for the unadjusted difference, and coverage falls to 0.11–0.70. The reason is bias amplification (Pearl, 2010; Myers et al., 2011): Karnofsky score and symptoms drive treatment in these samples but barely the outcome (their correlation with the week-20 change is below 0.05). Adjusting for them removes treatment variation unrelated to baseline CD4, so what remains is more confounded. Leaving them out brings the bias back to the unadjusted level (+18 at γ = 2).
-- **A sensitivity analysis gets the direction right.** For the ANCOVA estimate with baseline CD4 hidden, the robustness value (Cinelli and Hazlett, 2020) is 0.20–0.26: a hidden confounder would need to explain a quarter of the remaining variance of both treatment and outcome to remove the estimate. Baseline CD4 explains 8% of the outcome's and up to 13% of the treatment's, so it could not, and indeed the true effect is clearly positive. If the analyst can say how strong the hidden confounder is, the same analysis gives the size of its bias: 28 cells/mm³ at γ = 2, against a realised error of 31.
+- **Boosted nuisance models leave some confounding behind.** AIPW with boosted trees (stopped early on held-out data) is 2–6 cells/mm³ too high, more so as γ rises, with coverage 0.92–0.93. Its spread at γ = 2 is lower than linear AIPW's (14.1 against 23.1), but on 540–1,070 patients the trees capture the confounding less completely than the linear models do.
+- **With the main confounder hidden, every adjustment fails, and adjusting makes it worse than not adjusting.** At γ = 2 the adjusted estimates are 25–31 cells/mm³ too high against 17 for the unadjusted difference, and coverage falls to 0.12–0.60. The reason is bias amplification (Pearl, 2010; Myers et al., 2011): Karnofsky score and symptoms drive treatment in these samples but barely the outcome (their correlation with the week-20 change is below 0.05). Adjusting for them removes treatment variation unrelated to baseline CD4, so what remains is more confounded. Leaving them out brings the bias back to the unadjusted level (+18 at γ = 2).
+- **A sensitivity analysis gets the direction right.** For the ANCOVA estimate with baseline CD4 hidden, the robustness value (Cinelli and Hazlett, 2020) is 0.20–0.26: a hidden confounder would need to explain a fifth to a quarter of the remaining variance of both treatment and outcome to remove the estimate. Baseline CD4 explains 8% of the outcome's and up to 13% of the treatment's, so it could not, and indeed the true effect is clearly positive. If the analyst can say how strong the hidden confounder is, the same analysis gives the size of its bias: 28 cells/mm³ at γ = 2, against a realised error of 31.
 
 Measured confounders make the methods work; a hidden one cannot be adjusted away, and adjusting for the wrong variables makes it worse. What can be done without the confounder is to ask how strong it would have to be.
 
@@ -144,13 +144,6 @@ Complete cases are compared with inverse probability of censoring weighting (IPC
 | depends on the outcome | mean change, zidovudine alone | +33.0 (33.2) | +30.0 (30.2) | +29.9 (30.0) |
 | depends on the outcome | mean change, newer regimens | +34.3 (34.3) | +31.1 (31.2) | +31.1 (31.2) |
 | depends on the outcome | effect | +1.2 (3.9) | +1.1 (3.9) | +1.3 (3.9) |
-| Quantity | Complete cases | IPCW | AIPW |
-|---|---|---|---|
-| CD4 at week 96, zidovudine alone | 287.6 [269.9, 305.3] | 276.5 [259.7, 294.3] | 275.1 [258.7, 291.7] |
-| CD4 at week 96, newer regimens | 341.4 [331.0, 352.2] | 334.9 [325.7, 344.7] | 335.0 [325.8, 344.7] |
-| change to week 96, zidovudine alone | -77.5 [-92.4, -61.3] | -77.8 [-91.7, -61.9] | -78.1 [-92.2, -61.9] |
-| change to week 96, newer regimens | -10.4 [-19.5, -1.0] | -14.6 [-23.6, -6.3] | -14.6 [-23.7, -6.1] |
-| effect at week 96 | +67.1 [+49.7, +84.6] | +63.2 [+46.3, +80.3] | +63.4 [+47.0, +80.1] |
 
 ![E3 bias under simulated dropout, and week 96 with and without correction](figures/e3_dropout.png)
 
@@ -169,8 +162,8 @@ Complete cases are compared with inverse probability of censoring weighting (IPC
 | change to week 96, newer regimens | -10.4 [-19.5, -1.0] | -14.6 [-23.6, -6.3] | -14.6 [-23.7, -6.1] |
 | effect at week 96 | +67.1 [+49.7, +84.6] | +63.2 [+46.3, +80.3] | +63.4 [+47.0, +80.1] |
 
-- **Complete cases overstate how well patients are doing at week 96** by 11–12 cells/mm³ on zidovudine alone and about 6 on the newer regimens, consistent with the patients doing worse dropping out.
-- **The effect is slightly smaller once dropout is corrected:** +63 against +67 cells/mm³; the change on the newer regimens is −15 rather than −10. The conclusion of E1 stands.
+- **Complete cases overstate the week-96 count** by 11–13 cells/mm³ on zidovudine alone and about 6 on the newer regimens. On zidovudine alone this is mostly because the patients missing at week 96 started lower (mean baseline 335 against 365); their corrected change, −78, is the same as with complete cases. On the newer regimens the corrected change is also worse: −15 rather than −10.
+- **The effect is slightly smaller once dropout is corrected:** +63 against +67 cells/mm³. The conclusion of E1 stands.
 - **This rests on dropout depending only on what was measured before it.** The simulation shows what happens if it does not; the data cannot tell the two apart.
 
 ### E4: who benefits
@@ -187,38 +180,29 @@ Every contrast below is randomised, so it is unconfounded; the question is wheth
 | symptomatic: no | 1769 | +51.4 [+39.7, +63.6] | -5.5 [-31.1, +22.6] |
 | symptomatic: yes | 370 | +45.9 [+24.1, +70.6] |  |
 
-No subgroup's effect differs from another's: every difference has an interval spanning zero, and every group's effect is within 5 cells/mm³ of the overall +50.
+For each characteristic, the difference between its last and first group has an interval spanning zero, and every group's effect is within 5 cells/mm³ of the overall +50.
 
-**Predicted benefit.** Three learners predict each patient's effect from the baseline covariates, out of fold (5-fold cross-fitting): a T-learner (separate outcome models per arm, linear or boosted; Künzel et al., 2019) and a DR-learner (a doubly robust pseudo-outcome with the trial's known treatment probability, regressed on the covariates with a ridge penalty; Kennedy, 2023). Patients are cut into quartiles of predicted benefit, and within each quartile the randomised effect checks the prediction:
+**Predicted benefit.** Three learners predict each patient's effect from the baseline covariates, out of fold (5-fold cross-fitting): a T-learner (separate outcome models per arm, linear or boosted; Künzel et al., 2019) and a DR-learner (a doubly robust pseudo-outcome with the trial's known treatment probability, regressed on the covariates with a ridge penalty; Kennedy, 2023). For the DR-learner, the outcome models and the final regression are fitted on separate folds, so no model behind a patient's prediction has seen that patient's outcome. Each fold's predictions come from different models and can sit at a different level, so patients are cut into quartiles of predicted benefit within their fold. Within each quartile the randomised effect checks the prediction:
 
 | Learner | SD of predictions | Q1: predicted / randomised | Q2: predicted / randomised | Q3: predicted / randomised | Q4: predicted / randomised | Q4 − Q1 |
 |---|---|---|---|---|---|---|
-| T-learner, linear | 22 | 21 / 59 [36, 82] | 44 / 43 [20, 65] | 56 / 57 [37, 78] | 77 / 42 [23, 61] | -16.2 [-45.2, +14.5] |
-| T-learner, boosting | 52 | -13 / 31 [11, 51] | 35 / 61 [39, 82] | 66 / 62 [40, 83] | 117 / 47 [24, 70] | +16.0 [-13.5, +47.7] |
-| DR-learner | 4 | 48 / 61 [41, 81] | 52 / 43 [18, 66] | 54 / 68 [47, 90] | 58 / 28 [8, 50] | -32.8 [-59.0, -0.4] |
-| Subgroup | Patients | Effect | Difference |
-|---|---|---|---|
-| prior antiretroviral therapy: no | 886 | +46.9 [+29.2, +64.8] | +6.3 [-17.4, +26.9] |
-| prior antiretroviral therapy: yes | 1253 | +53.3 [+39.2, +66.4] |  |
-| baseline CD4: 0-290 | 723 | +53.1 [+38.7, +68.5] | -4.6 [-31.0, +20.8] |
-| baseline CD4: 291-394 | 705 | +46.9 [+30.0, +63.6] |  |
-| baseline CD4: 395-1199 | 711 | +48.5 [+26.9, +71.2] |  |
-| symptomatic: no | 1769 | +51.4 [+39.7, +63.6] | -5.5 [-31.1, +22.6] |
-| symptomatic: yes | 370 | +45.9 [+24.1, +70.6] |  |
+| T-learner, linear | 22 | 21 / 59 [37, 84] | 44 / 40 [18, 63] | 57 / 63 [44, 83] | 77 / 40 [21, 60] | -19.4 [-47.9, +11.3] |
+| T-learner, boosting | 34 | 12 / 47 [23, 69] | 42 / 41 [22, 61] | 62 / 45 [24, 66] | 93 / 70 [45, 94] | +22.5 [-9.5, +54.9] |
+| DR-learner | 6 | 45 / 56 [31, 79] | 50 / 51 [28, 73] | 53 / 41 [20, 60] | 58 / 56 [36, 76] | -0.6 [-30.7, +30.8] |
 
 ![E4 predicted against randomised benefit, and subgroup effects](figures/e4_benefit.png)
 
-- **The T-learners predict benefits that are not there.** The boosted T-learner predicts effects from −13 to +117 cells/mm³ across quartiles; the randomised effects in those quartiles are 31–62 and do not rise with the prediction (top minus bottom +16 [−14, 48]). The linear T-learner's spread from 21 to 77 is likewise not borne out.
-- **The DR-learner predicts nearly the same effect for everyone** (48–58), which is what the randomised contrasts support. Its quartile contrast (−33 [−59, −0.4]) runs against its own prediction over a predicted range of 10 cells/mm³; one of three such contrasts with an interval just excluding zero is what chance alone produces.
+- **The T-learners predict a spread of benefit that the randomised contrasts do not confirm.** The linear T-learner predicts 21 to 77 cells/mm³ across quartiles; the randomised effects are 59, 40, 63 and 40, with no trend (top minus bottom −19 [−48, +11]). The boosted T-learner predicts 12 to 93; its top quartile has the largest randomised effect (70 against 41–47), but the top-minus-bottom difference, +23 [−10, +55], is within chance.
+- **The DR-learner predicts nearly the same effect for everyone** (45–58 across quartiles), and the randomised effects in its quartiles agree (41–56; top minus bottom −0.6 [−31, +31]).
 - **A model can always produce individual predictions; only randomised contrasts say whether they mean anything.** Here they say the newer regimens helped about equally across the measured patient characteristics.
 
 ## Limitations
 
 - **One trial, one marker.** The CD4 count is a marker of HIV progression, not a clinical outcome, and two follow-up visits make a short trajectory. The methods carry over; the numbers do not.
 - **Simulated confounding is simple.** In E2 treatment depends on three baseline characteristics through a logistic model. Real treatment decisions depend on more, including things never recorded.
-- **The truth is itself an estimate.** The trial's answer has its own uncertainty (±10 cells/mm³). Every sample in E2 is drawn from the same patients, so coverage is measured with a finite-population correction; without confounding it comes out at 0.91–0.98.
+- **The truth is itself an estimate.** The trial's answer has its own uncertainty (±10 cells/mm³). Every sample in E2 is drawn from the same patients, so coverage uses the variance of the difference between a sample's estimate and the trial's, an approximation; without confounding it comes out at 0.92–0.97.
 - **Week 96 is not observed after death.** A patient who dies before week 96 has no count to miss, and the data record a combined event (CD4 halving, AIDS or death), not death alone. Dropout is as common with this event as without it (37% in both), but the corrected means treat every missing count as one that could have been measured.
-- **Small samples for flexible models.** The confounded samples hold 540–1,070 patients, which favours simple models; with more data, boosted nuisance models may do better.
+- **Small samples for flexible models.** The confounded samples hold 540–1,070 patients; at that size, boosted nuisance models leave some of the confounding behind.
 
 ## Reproduce
 
@@ -238,7 +222,7 @@ Everything runs on CPU. Set `JOBS` to the number of parallel workers for E2 (def
 4. runs E1, E2, E3 and E4;
 5. draws the figures.
 
-Results are written to `results/` and figures to `figures/`. E2 takes about 15 minutes with 8 workers; the rest takes about 2 minutes.
+Results are written to `results/` and figures to `figures/`.
 
 ```
 src/trial_trajectories/   data, average-effect estimators, confounded sampling, sensitivity analysis,

@@ -5,7 +5,7 @@
 On the full trial (randomised, so every group contrast is unconfounded), the week-20 effect:
 - in groups fixed before looking at the data: prior antiretroviral therapy, baseline CD4 tertile, symptoms;
 - by predicted benefit: out-of-fold predictions from a T-learner (linear, boosting) and a DR-learner, cut into
-  quartiles; within each quartile the randomised effect checks whether predicted benefit is real benefit.
+  quartiles within each fold; within each quartile the randomised effect checks whether predicted benefit is real benefit.
 Writes results/e4_subgroups.csv and results/e4_calibration.csv.
 """
 import os
@@ -18,7 +18,7 @@ import pandas as pd
 
 from trial_trajectories.data import ROOT, covariate_matrix, load_trial
 from trial_trajectories.estimators import folds_for
-from trial_trajectories.hte import dr_learner, group_effect_difference, group_effects, t_learner
+from trial_trajectories.hte import dr_learner, group_effect_difference, group_effects, quartiles_within_folds, t_learner
 
 
 def subgroups(df: pd.DataFrame, y: np.ndarray, t: np.ndarray) -> pd.DataFrame:
@@ -46,7 +46,7 @@ def calibration(y: np.ndarray, t: np.ndarray, x: np.ndarray) -> pd.DataFrame:
              "DR-learner": dr_learner(y, t, x, folds, p_treat=t.mean())}
     rows = []
     for k, (learner, pred) in enumerate(preds.items()):
-        quartile = pd.qcut(pred, 4, labels=False) + 1
+        quartile = quartiles_within_folds(pred, folds)
         res = group_effects(y, t, quartile, seed=10 + k).sort_values("group")
         res["predicted"] = [pred[quartile == q].mean() for q in res["group"]]
         diff, low, high = group_effect_difference(y, t, quartile, 1, 4, seed=10 + k)

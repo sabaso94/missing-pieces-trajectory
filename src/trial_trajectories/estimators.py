@@ -5,7 +5,8 @@ covariates x.
 - ancova: ordinary least squares of y on t and x, robust (HC1) standard error;
 - ipw: inverse probability weighting (Hajek) with a logistic propensity model;
 - aipw: augmented IPW (doubly robust), outcome models per arm and propensity fitted by cross-fitting
-  (Chernozhukov et al., 2018), with linear or gradient-boosted nuisance models.
+  (Chernozhukov et al., 2018), with linear or gradient-boosted nuisance models. Boosting stops early on a
+  held-out 20% of the training rows (validation loss), so the number of trees is chosen by the data.
 Estimated propensities are clipped to [clip, 1 - clip].
 """
 from typing import Callable, NamedTuple
@@ -49,18 +50,24 @@ def cross_fit_predict(make_model: Callable, x: np.ndarray, y: np.ndarray, folds:
     return pred
 
 
+BOOSTING = dict(max_iter=200, learning_rate=0.05, max_leaf_nodes=8, min_samples_leaf=20, early_stopping=True,
+                validation_fraction=0.2, n_iter_no_change=10)
+
+
 def outcome_model(nuisance: str, seed: int = 0):
     if nuisance == "linear":
         return LinearRegression()
-    return HistGradientBoostingRegressor(max_iter=200, learning_rate=0.05, max_leaf_nodes=8, min_samples_leaf=20,
-                                         random_state=seed)
+    return HistGradientBoostingRegressor(**BOOSTING, random_state=seed)
 
 
 def propensity_model(nuisance: str, seed: int = 0):
     if nuisance == "linear":
         return make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
-    return HistGradientBoostingClassifier(max_iter=200, learning_rate=0.05, max_leaf_nodes=8, min_samples_leaf=20,
-                                          random_state=seed)
+    return HistGradientBoostingClassifier(**BOOSTING, random_state=seed)
+
+
+def clipped_propensity(e: np.ndarray, clip: float) -> np.ndarray:
+    return np.clip(e, clip, 1 - clip)
 
 
 def diff_in_means(y: np.ndarray, t: np.ndarray) -> Estimate:
@@ -94,7 +101,7 @@ def ols_treatment_t(y: np.ndarray, t: np.ndarray, x: np.ndarray) -> tuple[float,
 
 
 def ipw(y: np.ndarray, t: np.ndarray, x: np.ndarray, clip: float = 0.01) -> Estimate:
-    e = np.clip(_predict(propensity_model("linear").fit(x, t), x), clip, 1 - clip)
+    e = clipped_propensity(_predict(propensity_model("linear").fit(x, t), x), clip)
     w1, w0 = t / e, (1 - t) / (1 - e)
     mu1, mu0 = (w1 @ y) / w1.sum(), (w0 @ y) / w0.sum()
     influence = w1 * (y - mu1) / w1.mean() - w0 * (y - mu0) / w0.mean()
@@ -106,6 +113,6 @@ def aipw(y: np.ndarray, t: np.ndarray, x: np.ndarray, nuisance: str = "linear", 
     folds = folds_for(len(y), n_folds, seed)
     mu1 = cross_fit_predict(lambda: outcome_model(nuisance, seed), x, y, folds, rows=t == 1)
     mu0 = cross_fit_predict(lambda: outcome_model(nuisance, seed), x, y, folds, rows=t == 0)
-    e = np.clip(cross_fit_predict(lambda: propensity_model(nuisance, seed), x, t, folds), clip, 1 - clip)
+    e = clipped_propensity(cross_fit_predict(lambda: propensity_model(nuisance, seed), x, t, folds), clip)
     psi = mu1 - mu0 + t * (y - mu1) / e - (1 - t) * (y - mu0) / (1 - e)
     return Estimate(float(psi.mean()), float(psi.std(ddof=1) / np.sqrt(len(y))))

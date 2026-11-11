@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.special import expit
 
-from trial_trajectories.estimators import aipw, ancova, cross_fit_predict, diff_in_means, folds_for, ipw
+from trial_trajectories.estimators import aipw, ancova, cross_fit_predict, diff_in_means, folds_for, ipw, propensity_model
 
 ATE = 2.0
 
@@ -77,3 +77,35 @@ def test_intervals_cover_near_nominal():
         low, high = ancova(y, t, x).ci()
         covered += low <= ATE <= high
     assert 0.90 <= covered / 200 <= 0.99
+
+
+def test_boosted_propensity_does_not_overfit_a_randomised_trial():
+    # randomised with P(T = 1) = 0.75 and 15 irrelevant covariates: estimated propensities should stay near 0.75
+    rng = np.random.default_rng(3)
+    x = rng.normal(size=(2000, 15))
+    t = (rng.random(2000) < 0.75).astype(int)
+    e = cross_fit_predict(lambda: propensity_model("boosting"), x, t, folds_for(2000, 5, seed=0))
+    assert np.percentile(e, 1) > 0.55 and np.percentile(e, 99) < 0.92
+
+
+class _Degenerate:
+    """A propensity model that is certain: 0 for half the rows, 1 for the rest."""
+
+    def fit(self, x, t):
+        return self
+
+    def predict_proba(self, x):
+        p = (x[:, 0] > 0).astype(float)
+        return np.column_stack([1 - p, p])
+
+
+def test_estimated_propensities_are_clipped(monkeypatch):
+    import trial_trajectories.estimators as est
+    monkeypatch.setattr(est, "propensity_model", lambda nuisance, seed=0: _Degenerate())
+    rng = np.random.default_rng(4)
+    x = rng.normal(size=(400, 2))
+    t = (rng.random(400) < 0.5).astype(int)
+    y = t + rng.normal(size=400)
+    for estimate in [est.ipw(y, t, x), est.aipw(y, t, x, "linear")]:
+        assert np.isfinite(estimate.est) and np.isfinite(estimate.se)
+    assert est.clipped_propensity(np.array([0.0, 0.5, 1.0]), 0.01).tolist() == [0.01, 0.5, 0.99]
