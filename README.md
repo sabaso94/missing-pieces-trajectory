@@ -222,7 +222,7 @@ Everything runs on CPU. Set `JOBS` to the number of parallel workers for E2 (def
 4. runs E1, E2, E3 and E4;
 5. draws the figures.
 
-Results are written to `results/` and figures to `figures/`.
+Results are written to `results/` and figures to `figures/`. Seeds are fixed, and a full rerun from empty `results/` and `figures/` reproduced every CSV and every figure exactly.
 
 ```
 src/trial_trajectories/   data, average-effect estimators, confounded sampling, sensitivity analysis,
