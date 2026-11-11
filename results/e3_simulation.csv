@@ -1,0 +1,28 @@
+mechanism,method,quantity,truth,bias,sd,rmse
+as observed,complete,control mean,-17.0658,-2.2686,3.6536,4.2975
+as observed,complete,treated mean,33.3435,-0.2345,2.3214,2.3309
+as observed,complete,effect,50.4093,2.0341,4.5119,4.9451
+as observed,ipcw,control mean,-17.0658,-0.0994,3.6025,3.6003
+as observed,ipcw,treated mean,33.3435,-0.0265,2.3265,2.3244
+as observed,ipcw,effect,50.4093,0.0730,4.4451,4.4412
+as observed,aipw,control mean,-17.0658,-0.1589,3.6670,3.6668
+as observed,aipw,treated mean,33.3435,-0.0304,2.3424,2.3402
+as observed,aipw,effect,50.4093,0.1285,4.4952,4.4925
+3x stronger,complete,control mean,-17.0658,-4.6214,3.0482,5.5345
+3x stronger,complete,treated mean,33.3435,-0.3668,2.3043,2.3310
+3x stronger,complete,effect,50.4093,4.2546,3.9352,5.7928
+3x stronger,ipcw,control mean,-17.0658,-0.2786,5.4399,5.4415
+3x stronger,ipcw,treated mean,33.3435,-0.0698,3.0727,3.0704
+3x stronger,ipcw,effect,50.4093,0.2088,6.4438,6.4407
+3x stronger,aipw,control mean,-17.0658,-0.4343,5.5944,5.6056
+3x stronger,aipw,treated mean,33.3435,-0.1070,3.0784,3.0772
+3x stronger,aipw,effect,50.4093,0.3273,6.5811,6.5827
+depends on the outcome,complete,control mean,-17.0658,33.0457,3.1073,33.1912
+depends on the outcome,complete,treated mean,33.3435,34.2891,1.9759,34.3459
+depends on the outcome,complete,effect,50.4093,1.2434,3.6667,3.8683
+depends on the outcome,ipcw,control mean,-17.0658,30.0073,3.2422,30.1815
+depends on the outcome,ipcw,treated mean,33.3435,31.1259,1.9756,31.1885
+depends on the outcome,ipcw,effect,50.4093,1.1187,3.7673,3.9262
+depends on the outcome,aipw,control mean,-17.0658,29.8594,3.2235,30.0326
+depends on the outcome,aipw,treated mean,33.3435,31.1390,1.9885,31.2023
+depends on the outcome,aipw,effect,50.4093,1.2796,3.7312,3.9410

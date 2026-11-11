@@ -7,6 +7,11 @@ treated patients mixes that course with the effect of the newer regimens; the ra
 effect. Week 96 uses the patients with a week-96 count (E3 looks at who is missing).
 Writes results/e1_trajectory.csv and results/e1_effects.csv.
 """
+import os
+
+for _var in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"]:
+    os.environ.setdefault(_var, "1")  # small models: one thread is fastest and keeps results identical
+
 import numpy as np
 import pandas as pd
 

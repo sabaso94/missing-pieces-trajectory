@@ -1,0 +1,16 @@
+method,quantity,est,low,high
+complete,"CD4 at week 96, zidovudine alone",287.617,269.872,305.295
+complete,"CD4 at week 96, newer regimens",341.447,330.999,352.193
+complete,"change to week 96, zidovudine alone",-77.498,-92.383,-61.323
+complete,"change to week 96, newer regimens",-10.357,-19.473,-1.008
+complete,effect at week 96,67.142,49.717,84.615
+ipcw,"CD4 at week 96, zidovudine alone",276.474,259.694,294.302
+ipcw,"CD4 at week 96, newer regimens",334.860,325.663,344.691
+ipcw,"change to week 96, zidovudine alone",-77.828,-91.665,-61.878
+ipcw,"change to week 96, newer regimens",-14.645,-23.647,-6.252
+ipcw,effect at week 96,63.183,46.320,80.324
+aipw,"CD4 at week 96, zidovudine alone",275.150,258.744,291.699
+aipw,"CD4 at week 96, newer regimens",334.983,325.756,344.700
+aipw,"change to week 96, zidovudine alone",-78.055,-92.167,-61.880
+aipw,"change to week 96, newer regimens",-14.623,-23.710,-6.146
+aipw,effect at week 96,63.432,46.956,80.054
