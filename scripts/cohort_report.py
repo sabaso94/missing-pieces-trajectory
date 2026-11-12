@@ -27,7 +27,7 @@ def main() -> None:
     df = load_trial()
     rows = [describe(df, "all")]
     rows += [describe(df[df["treat"] == t], name) for t, name in [(0, "zidovudine alone"), (1, "newer regimens")]]
-    rows += [describe(df[df["arms"] == a], ARM_NAMES[a]) for a in sorted(ARM_NAMES)]
+    rows += [describe(df[df["arms"] == a], ARM_NAMES[a]) for a in (1, 2, 3)]  # arm 0 is "zidovudine alone"
     out = pd.DataFrame(rows)
     out.to_csv(ROOT / "results" / "cohort.csv", index=False, float_format="%.4f")
     print(out[["group", "n", "cd4_week0", "cd4_week20", "cd4_week96", "missing_week96"]].round(3).to_string(index=False))

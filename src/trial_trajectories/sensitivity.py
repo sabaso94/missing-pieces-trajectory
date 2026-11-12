@@ -14,11 +14,15 @@ def partial_r2(t_stat: float, dof: int) -> float:
 
 
 def robustness_value(t_stat: float, dof: int, q: float = 1.0, alpha: float | None = None) -> float:
-    f = q * abs(t_stat) / np.sqrt(dof)
-    if alpha is not None:
-        f -= abs(student_t.ppf(alpha / 2, dof - 1)) / np.sqrt(dof - 1)
-        if f <= 0:
-            return 0.0
+    """As in sensemakr: for a very large t-statistic (q|t|/sqrt(dof) > 1/f_crit) the bound is reached with the
+    confounder explaining all of the treatment, and the extreme formula applies."""
+    fq = q * abs(t_stat) / np.sqrt(dof)
+    f_crit = abs(student_t.ppf(alpha / 2, dof - 1)) / np.sqrt(dof - 1) if alpha is not None else 0.0
+    f = fq - f_crit
+    if f <= 0:
+        return 0.0
+    if f_crit > 0 and fq > 1 / f_crit:
+        return float((fq ** 2 - f_crit ** 2) / (1 + fq ** 2))
     return float(0.5 * (np.sqrt(f ** 4 + 4 * f ** 2) - f ** 2))
 
 
