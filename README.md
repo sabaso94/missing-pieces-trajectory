@@ -11,7 +11,7 @@ This repository studies those questions on ACTG 175, a randomised trial of 2,139
 
 Confidence intervals are 95% intervals from a bootstrap with 1,000 resamples of patients unless stated otherwise. Simulations repeat each setting 500 times.
 
-This is the fourth study in a series with [missing-pieces-ecg](https://github.com/sabaso94/missing-pieces-ecg) (a deep ECG classifier with missing leads, subgroups and shift), [missing-pieces-wearable](https://github.com/sabaso94/missing-pieces-wearable) (mortality risk from a wrist wearable and clinical data when parts are missing) and [missing-pieces-retina](https://github.com/sabaso94/missing-pieces-retina) (a retinal screening model at clinics it never saw). Here the missing pieces are the counterfactual (what would have happened without treatment) and the visits patients did not attend.
+This is the fourth of four studies in a series with [missing-pieces-ecg](https://github.com/sabaso94/missing-pieces-ecg) (a deep ECG classifier with missing leads, subgroups and shift), [missing-pieces-wearable](https://github.com/sabaso94/missing-pieces-wearable) (mortality risk from a wrist wearable and clinical data when parts are missing, with a causal check of activity and mortality) and [missing-pieces-retina](https://github.com/sabaso94/missing-pieces-retina) (a retinal screening model at clinics it never saw). Here the missing pieces are the counterfactual (what would have happened without treatment) and the visits patients did not attend.
 
 ## Motivation
 
