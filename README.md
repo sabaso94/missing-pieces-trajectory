@@ -1,5 +1,7 @@
 # Treatment effect or natural course? Causal estimates and missing follow-up checked against a randomised trial
 
+[![tests](https://github.com/sabaso94/missing-pieces-trajectory/actions/workflows/tests.yml/badge.svg)](https://github.com/sabaso94/missing-pieces-trajectory/actions/workflows/tests.yml)
+
 A patient's marker changes after a treatment starts. How much of the change is the disease taking its course, and how much is the treatment? Can that be answered from data where treatment was not randomised, or where patients miss later visits?
 
 This repository studies those questions on ACTG 175, a randomised trial of 2,139 adults with HIV. CD4 counts were measured at baseline, week 20 and week 96. Because the trial was randomised, its own answer is known, and every method can be checked against it. It covers:
@@ -208,7 +210,7 @@ For each characteristic, the difference between its last and first group has an 
 
 ```bash
 python -m venv .venv
-.venv/bin/pip install -U pip "setuptools>=64"
+.venv/bin/pip install -U pip "setuptools>=77"
 .venv/bin/pip install -r requirements.txt
 .venv/bin/pip install -e .
 bash scripts/run_all.sh
@@ -247,3 +249,7 @@ figures/                  the figures above
 - Pearl J (2010). On a class of bias-amplifying variables that endanger effect estimates. *Proceedings of the 26th Conference on Uncertainty in Artificial Intelligence*, PMLR R8:424–431.
 - Robins JM, Rotnitzky A, Zhao LP (1994). Estimation of regression coefficients when some regressors are not always observed. *Journal of the American Statistical Association* 89:846–866.
 - Robins JM, Rotnitzky A, Zhao LP (1995). Analysis of semiparametric regression models for repeated outcomes in the presence of missing data. *Journal of the American Statistical Association* 90:106–121.
+
+## Licence
+
+The code is released under the [MIT licence](LICENSE). The data are not part of this repository; each dataset keeps its own licence and terms of use.
