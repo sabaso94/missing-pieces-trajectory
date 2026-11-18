@@ -19,7 +19,8 @@ def test_bootstrap_ci_of_several_statistics_at_once():
 def test_coverage_of_a_nested_truth_is_nominal():
     # sample estimates vary around the trial's estimate with variance se**2 - se_truth**2 (Hausman form)
     from trial_trajectories.metrics import coverage_of_truth
+
     rng = np.random.default_rng(0)
     se, se_truth = np.full(20_000, 10.0), 6.0
-    est = 50 + rng.normal(scale=np.sqrt(se ** 2 - se_truth ** 2), size=20_000)
+    est = 50 + rng.normal(scale=np.sqrt(se**2 - se_truth**2), size=20_000)
     assert abs(coverage_of_truth(est, se, 50.0, se_truth).mean() - 0.95) < 0.01

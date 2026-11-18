@@ -7,6 +7,7 @@ treated patients mixes that course with the effect of the newer regimens; the ra
 effect. Week 96 uses the patients with a week-96 count (E3 looks at who is missing).
 Writes results/e1_trajectory.csv and results/e1_effects.csv.
 """
+
 import os
 
 for _var in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"]:
@@ -30,9 +31,10 @@ def trajectory(df: pd.DataFrame) -> pd.DataFrame:
     for name, mask in groups.items():
         for week, col in WEEKS.items():
             values = df.loc[mask, col].dropna().to_numpy()
-            low, high = bootstrap_ci(lambda idx: values[idx].mean(), len(values), seed=week)
-            rows.append({"group": name, "week": week, "n": len(values), "mean_cd4": values.mean(),
-                         "low": low, "high": high})
+            low, high = bootstrap_ci(lambda idx, values=values: values[idx].mean(), len(values), seed=week)
+            rows.append(
+                {"group": name, "week": week, "n": len(values), "mean_cd4": values.mean(), "low": low, "high": high}
+            )
     return pd.DataFrame(rows)
 
 
@@ -43,15 +45,27 @@ def effects(df: pd.DataFrame, name: str, week: int) -> list[dict]:
 
     def stats(idx):
         yi, ti = y[idx], t[idx]
-        return np.array([yi[ti == 0].mean(), yi[ti == 1].mean(), yi[ti == 1].mean() - yi[ti == 0].mean(),
-                         ancova(yi, ti, x[idx]).est])
+        return np.array(
+            [
+                yi[ti == 0].mean(),
+                yi[ti == 1].mean(),
+                yi[ti == 1].mean() - yi[ti == 0].mean(),
+                ancova(yi, ti, x[idx]).est,
+            ]
+        )
 
     point = stats(np.arange(len(y)))
     low, high = bootstrap_ci(stats, len(y), seed=week)
-    labels = ["natural course (change on zidovudine alone)", "before-after change in the treated",
-              "effect, difference in means", "effect, ANCOVA"]
-    return [{"comparison": name, "week": week, "quantity": q, "est": p, "low": lo, "high": hi, "n": len(y)}
-            for q, p, lo, hi in zip(labels, point, low, high)]
+    labels = [
+        "natural course (change on zidovudine alone)",
+        "before-after change in the treated",
+        "effect, difference in means",
+        "effect, ANCOVA",
+    ]
+    return [
+        {"comparison": name, "week": week, "quantity": q, "est": p, "low": lo, "high": hi, "n": len(y)}
+        for q, p, lo, hi in zip(labels, point, low, high)
+    ]
 
 
 def main() -> None:

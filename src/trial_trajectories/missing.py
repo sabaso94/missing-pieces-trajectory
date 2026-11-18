@@ -6,6 +6,7 @@ Within one arm, the mean of y over all patients is estimated from the observed o
 - aipw: a linear outcome model on h fitted on the observed, plus inverse-weighted residuals (doubly robust).
 Both corrections assume dropout depends only on the history h observed before it (missing at random).
 """
+
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -14,7 +15,7 @@ from sklearn.preprocessing import StandardScaler
 
 from trial_trajectories.data import COVARIATES
 
-HISTORY96 = COVARIATES + ["cd420"]  # what is known about a patient before the week-96 visit
+HISTORY96 = [*COVARIATES, "cd420"]  # what is known about a patient before the week-96 visit
 
 
 def week96_history(df: pd.DataFrame) -> np.ndarray:
@@ -26,8 +27,7 @@ def dropout_model(h: np.ndarray, observed: np.ndarray):
     return make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)).fit(h, observed.astype(int))
 
 
-def arm_mean(y: np.ndarray, observed: np.ndarray, h: np.ndarray, method: str = "complete",
-             clip: float = 0.01) -> float:
+def arm_mean(y: np.ndarray, observed: np.ndarray, h: np.ndarray, method: str = "complete", clip: float = 0.01) -> float:
     if method == "complete":
         return float(y[observed].mean())
     pi = np.clip(dropout_model(h, observed).predict_proba(h)[:, 1], clip, 1)

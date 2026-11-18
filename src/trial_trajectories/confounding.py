@@ -5,6 +5,7 @@ P(T = 1 | x) = expit(gamma * severity(x)), while the covariates keep the trial's
 effect in the sample is then still the trial's, and any estimator can be scored against it
 (the idea of Gentzel et al., 2021; here the sampling also preserves the covariate distribution).
 """
+
 import numpy as np
 import pandas as pd
 from scipy.special import expit

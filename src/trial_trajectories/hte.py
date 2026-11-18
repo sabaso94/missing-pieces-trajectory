@@ -9,6 +9,7 @@ Predicted effects are checked against randomised contrasts within groups of pati
 predictions come from different models, so their level can differ between folds; quartiles are therefore formed
 within each fold (quartiles_within_folds), so that a fold's level does not decide its patients' quartile.
 """
+
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import RidgeCV
@@ -19,14 +20,23 @@ from trial_trajectories.estimators import cross_fit_predict, outcome_model
 from trial_trajectories.missing import effect_in_group
 
 
-def t_learner(y: np.ndarray, t: np.ndarray, x: np.ndarray, nuisance: str, folds: np.ndarray, seed: int = 0) -> np.ndarray:
+def t_learner(
+    y: np.ndarray, t: np.ndarray, x: np.ndarray, nuisance: str, folds: np.ndarray, seed: int = 0
+) -> np.ndarray:
     mu1 = cross_fit_predict(lambda: outcome_model(nuisance, seed), x, y, folds, rows=t == 1)
     mu0 = cross_fit_predict(lambda: outcome_model(nuisance, seed), x, y, folds, rows=t == 0)
     return mu1 - mu0
 
 
-def dr_learner(y: np.ndarray, t: np.ndarray, x: np.ndarray, folds: np.ndarray, p_treat: float,
-               nuisance: str = "boosting", seed: int = 0) -> np.ndarray:
+def dr_learner(
+    y: np.ndarray,
+    t: np.ndarray,
+    x: np.ndarray,
+    folds: np.ndarray,
+    p_treat: float,
+    nuisance: str = "boosting",
+    seed: int = 0,
+) -> np.ndarray:
     """For each fold k, the other folds are split in two halves: outcome models on one half, pseudo-outcomes and
     the final ridge regression on the other; then the halves swap, and fold k gets the mean of both predictions."""
     pred = np.zeros(len(y))
@@ -62,15 +72,26 @@ def group_effects(y: np.ndarray, t: np.ndarray, groups: np.ndarray, n_boot: int 
     point = _effects(y, t, groups, labels)
     rng = np.random.default_rng(seed)
     boot = np.array([_effects(y[i], t[i], groups[i], labels) for i in rng.integers(0, len(y), size=(n_boot, len(y)))])
-    return pd.DataFrame({"group": labels, "n": [(groups == g).sum() for g in labels],
-                         "n_treated": [((groups == g) & (t == 1)).sum() for g in labels], "effect": point,
-                         "low": np.nanpercentile(boot, 2.5, axis=0), "high": np.nanpercentile(boot, 97.5, axis=0)})
+    return pd.DataFrame(
+        {
+            "group": labels,
+            "n": [(groups == g).sum() for g in labels],
+            "n_treated": [((groups == g) & (t == 1)).sum() for g in labels],
+            "effect": point,
+            "low": np.nanpercentile(boot, 2.5, axis=0),
+            "high": np.nanpercentile(boot, 97.5, axis=0),
+        }
+    )
 
 
-def group_effect_difference(y: np.ndarray, t: np.ndarray, groups: np.ndarray, a, b, n_boot: int = 1000,
-                            seed: int = 0) -> tuple[float, float, float]:
+def group_effect_difference(
+    y: np.ndarray, t: np.ndarray, groups: np.ndarray, a, b, n_boot: int = 1000, seed: int = 0
+) -> tuple[float, float, float]:
     """Effect in group b minus effect in group a, with a percentile interval."""
-    diff = lambda yy, tt, gg: effect_in_group(yy, tt, gg == b) - effect_in_group(yy, tt, gg == a)
+
+    def diff(yy, tt, gg):
+        return effect_in_group(yy, tt, gg == b) - effect_in_group(yy, tt, gg == a)
+
     rng = np.random.default_rng(seed)
     boot = [diff(y[i], t[i], groups[i]) for i in rng.integers(0, len(y), size=(n_boot, len(y)))]
     return float(diff(y, t, groups)), float(np.nanpercentile(boot, 2.5)), float(np.nanpercentile(boot, 97.5))

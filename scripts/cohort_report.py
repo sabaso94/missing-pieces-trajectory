@@ -4,6 +4,7 @@
 
 Writes results/cohort.csv (one row per group; means, with SDs for continuous covariates).
 """
+
 import pandas as pd
 
 from trial_trajectories.data import ARM_NAMES, COVARIATES, ROOT, load_trial
@@ -30,7 +31,9 @@ def main() -> None:
     rows += [describe(df[df["arms"] == a], ARM_NAMES[a]) for a in (1, 2, 3)]  # arm 0 is "zidovudine alone"
     out = pd.DataFrame(rows)
     out.to_csv(ROOT / "results" / "cohort.csv", index=False, float_format="%.4f")
-    print(out[["group", "n", "cd4_week0", "cd4_week20", "cd4_week96", "missing_week96"]].round(3).to_string(index=False))
+    print(
+        out[["group", "n", "cd4_week0", "cd4_week20", "cd4_week96", "missing_week96"]].round(3).to_string(index=False)
+    )
 
 
 if __name__ == "__main__":

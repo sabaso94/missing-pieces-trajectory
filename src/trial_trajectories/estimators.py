@@ -9,7 +9,9 @@ covariates x.
   held-out 20% of the training rows (validation loss), so the number of trees is chosen by the data.
 Estimated propensities are clipped to [clip, 1 - clip].
 """
-from typing import Callable, NamedTuple
+
+from collections.abc import Callable
+from typing import NamedTuple
 
 import numpy as np
 from scipy.stats import norm
@@ -39,8 +41,9 @@ def _predict(model, x: np.ndarray) -> np.ndarray:
     return model.predict_proba(x)[:, 1] if hasattr(model, "predict_proba") else model.predict(x)
 
 
-def cross_fit_predict(make_model: Callable, x: np.ndarray, y: np.ndarray, folds: np.ndarray,
-                      rows: np.ndarray | None = None) -> np.ndarray:
+def cross_fit_predict(
+    make_model: Callable, x: np.ndarray, y: np.ndarray, folds: np.ndarray, rows: np.ndarray | None = None
+) -> np.ndarray:
     """Predictions for every row from a model fitted on the other folds (restricted to `rows` if given)."""
     rows = np.ones(len(y), dtype=bool) if rows is None else rows
     pred = np.empty(len(y))
@@ -50,8 +53,15 @@ def cross_fit_predict(make_model: Callable, x: np.ndarray, y: np.ndarray, folds:
     return pred
 
 
-BOOSTING = dict(max_iter=200, learning_rate=0.05, max_leaf_nodes=8, min_samples_leaf=20, early_stopping=True,
-                validation_fraction=0.2, n_iter_no_change=10)
+BOOSTING = dict(
+    max_iter=200,
+    learning_rate=0.05,
+    max_leaf_nodes=8,
+    min_samples_leaf=20,
+    early_stopping=True,
+    validation_fraction=0.2,
+    n_iter_no_change=10,
+)
 
 
 def outcome_model(nuisance: str, seed: int = 0):
@@ -108,8 +118,15 @@ def ipw(y: np.ndarray, t: np.ndarray, x: np.ndarray, clip: float = 0.01) -> Esti
     return Estimate(float(mu1 - mu0), float(influence.std(ddof=1) / np.sqrt(len(y))))
 
 
-def aipw(y: np.ndarray, t: np.ndarray, x: np.ndarray, nuisance: str = "linear", n_folds: int = 5, seed: int = 0,
-         clip: float = 0.01) -> Estimate:
+def aipw(
+    y: np.ndarray,
+    t: np.ndarray,
+    x: np.ndarray,
+    nuisance: str = "linear",
+    n_folds: int = 5,
+    seed: int = 0,
+    clip: float = 0.01,
+) -> Estimate:
     folds = folds_for(len(y), n_folds, seed)
     mu1 = cross_fit_predict(lambda: outcome_model(nuisance, seed), x, y, folds, rows=t == 1)
     mu0 = cross_fit_predict(lambda: outcome_model(nuisance, seed), x, y, folds, rows=t == 0)

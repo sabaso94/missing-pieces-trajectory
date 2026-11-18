@@ -1,7 +1,15 @@
 import numpy as np
 from scipy.special import expit
 
-from trial_trajectories.estimators import aipw, ancova, cross_fit_predict, diff_in_means, folds_for, ipw, propensity_model
+from trial_trajectories.estimators import (
+    aipw,
+    ancova,
+    cross_fit_predict,
+    diff_in_means,
+    folds_for,
+    ipw,
+    propensity_model,
+)
 
 ATE = 2.0
 
@@ -101,6 +109,7 @@ class _Degenerate:
 
 def test_estimated_propensities_are_clipped(monkeypatch):
     import trial_trajectories.estimators as est
+
     monkeypatch.setattr(est, "propensity_model", lambda nuisance, seed=0: _Degenerate())
     rng = np.random.default_rng(4)
     x = rng.normal(size=(400, 2))

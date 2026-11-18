@@ -5,12 +5,14 @@
 For each confounding strength gamma, the trial is subsampled so that sicker patients are more likely to be
 treated (P(T = 1 | x) = expit(gamma * severity)), keeping the covariate distribution; see confounding.py.
 Five estimators of the week-20 effect, adjusting for all baseline covariates ("measured"), for all but the
-baseline CD4 count ("cd40 hidden"), or for all but cd40, Karnofsky score and symptoms, are scored against the trial's own estimate (ANCOVA on all 2,139 patients).
+baseline CD4 count ("cd40 hidden"), or for all but cd40, Karnofsky score and symptoms, are scored against the trial's
+own estimate (ANCOVA on all 2,139 patients).
 For the hidden setting, the sensitivity analysis of Cinelli and Hazlett (2020) is run on the ANCOVA estimate.
 Coverage is of the trial's estimate by the 95% interval, corrected for the overlap between each sample and the
 trial (see summarise).
 Writes results/e2_draws.csv, results/e2_summary.csv and results/e2_sensitivity.csv.
 """
+
 import os
 
 for _var in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"]:
@@ -36,8 +38,13 @@ TREATMENT_ONLY = ["karnof", "symptom"]
 
 
 def estimators(y, t, x, seed):
-    return {"difference in means": diff_in_means(y, t), "ANCOVA": ancova(y, t, x), "IPW": ipw(y, t, x),
-            "AIPW, linear": aipw(y, t, x, "linear", seed=seed), "AIPW, boosting": aipw(y, t, x, "boosting", seed=seed)}
+    return {
+        "difference in means": diff_in_means(y, t),
+        "ANCOVA": ancova(y, t, x),
+        "IPW": ipw(y, t, x),
+        "AIPW, linear": aipw(y, t, x, "linear", seed=seed),
+        "AIPW, boosting": aipw(y, t, x, "boosting", seed=seed),
+    }
 
 
 def one_draw(gamma, draw, y, t, x, score, seed):
@@ -50,16 +57,36 @@ def one_draw(gamma, draw, y, t, x, score, seed):
     for adjustment, xa in [("measured", xi), ("cd40 hidden", xh), ("cd40 hidden, karnof and symptom left out", xhs)]:
         for name, est in estimators(yi, ti, xa, seed).items():
             low, high = est.ci()
-            rows.append({"gamma": gamma, "draw": draw, "adjustment": adjustment, "estimator": name, "est": est.est,
-                         "se": est.se, "low": low, "high": high, "n": len(idx), "treated_share": ti.mean()})
+            rows.append(
+                {
+                    "gamma": gamma,
+                    "draw": draw,
+                    "adjustment": adjustment,
+                    "estimator": name,
+                    "est": est.est,
+                    "se": est.se,
+                    "low": low,
+                    "high": high,
+                    "n": len(idx),
+                    "treated_share": ti.mean(),
+                }
+            )
     t_stat, dof = ols_treatment_t(yi, ti, xh)
     z = xi[:, hidden_col]
     r2_yz, r2_tz = partial_r2_of(yi, z, np.column_stack([ti, xh])), partial_r2_of(ti.astype(float), z, xh)
     est_hidden = ancova(yi, ti, xh).est
-    sens = {"gamma": gamma, "draw": draw, "est_hidden": est_hidden, "t_stat": t_stat, "dof": dof,
-            "rv": robustness_value(t_stat, dof), "rv_alpha05": robustness_value(t_stat, dof, alpha=0.05),
-            "r2_y_cd40": r2_yz, "r2_t_cd40": r2_tz,
-            "bias_bound_cd40": bias_bound(r2_yz, r2_tz, est_hidden / t_stat, dof)}
+    sens = {
+        "gamma": gamma,
+        "draw": draw,
+        "est_hidden": est_hidden,
+        "t_stat": t_stat,
+        "dof": dof,
+        "rv": robustness_value(t_stat, dof),
+        "rv_alpha05": robustness_value(t_stat, dof, alpha=0.05),
+        "r2_y_cd40": r2_yz,
+        "r2_t_cd40": r2_tz,
+        "bias_bound_cd40": bias_bound(r2_yz, r2_tz, est_hidden / t_stat, dof),
+    }
     return rows, sens
 
 
@@ -72,8 +99,14 @@ def summarise(draws: pd.DataFrame, truth: float, se_truth: float) -> pd.DataFram
     covered = coverage_of_truth(draws["est"].to_numpy(), draws["se"].to_numpy(), truth, se_truth)
     g = draws.assign(err=draws["est"] - truth, covered=covered)
     out = g.groupby(["gamma", "adjustment", "estimator"], sort=False).agg(
-        bias=("err", "mean"), sd=("est", "std"), rmse=("err", lambda e: np.sqrt((e ** 2).mean())),
-        coverage=("covered", "mean"), mean_se=("se", "mean"), n=("n", "mean"), draws=("est", "size"))
+        bias=("err", "mean"),
+        sd=("est", "std"),
+        rmse=("err", lambda e: np.sqrt((e**2).mean())),
+        coverage=("covered", "mean"),
+        mean_se=("se", "mean"),
+        n=("n", "mean"),
+        draws=("est", "size"),
+    )
     return out.reset_index()
 
 
@@ -95,13 +128,25 @@ def main() -> None:
     draws.to_csv(out / "e2_draws.csv", index=False, float_format="%.4f")
     summary = summarise(draws, truth, trial.se).assign(truth=truth)
     summary.to_csv(out / "e2_summary.csv", index=False, float_format="%.4f")
-    sens = sens.assign(abs_error=(sens["est_hidden"] - truth).abs(),
-                       cd40_explains_away=sens["bias_bound_cd40"] >= sens["est_hidden"].abs())
-    sens_summary = sens.groupby("gamma").agg(
-        est_hidden=("est_hidden", "mean"), rv=("rv", "mean"), rv_alpha05=("rv_alpha05", "mean"),
-        r2_y_cd40=("r2_y_cd40", "mean"), r2_t_cd40=("r2_t_cd40", "mean"),
-        bias_bound_cd40=("bias_bound_cd40", "mean"), abs_error=("abs_error", "mean"),
-        share_explained_away=("cd40_explains_away", "mean")).reset_index().assign(truth=truth)
+    sens = sens.assign(
+        abs_error=(sens["est_hidden"] - truth).abs(),
+        cd40_explains_away=sens["bias_bound_cd40"] >= sens["est_hidden"].abs(),
+    )
+    sens_summary = (
+        sens.groupby("gamma")
+        .agg(
+            est_hidden=("est_hidden", "mean"),
+            rv=("rv", "mean"),
+            rv_alpha05=("rv_alpha05", "mean"),
+            r2_y_cd40=("r2_y_cd40", "mean"),
+            r2_t_cd40=("r2_t_cd40", "mean"),
+            bias_bound_cd40=("bias_bound_cd40", "mean"),
+            abs_error=("abs_error", "mean"),
+            share_explained_away=("cd40_explains_away", "mean"),
+        )
+        .reset_index()
+        .assign(truth=truth)
+    )
     sens_summary.to_csv(out / "e2_sensitivity.csv", index=False, float_format="%.4f")
     print(f"truth {truth:.2f}")
     print(summary.round(3).to_string(index=False))

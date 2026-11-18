@@ -28,7 +28,8 @@ def test_bias_bound_is_the_omitted_variable_bias_of_a_known_confounder():
 def test_robustness_value_uses_the_extreme_formula_for_very_large_t():
     # sensemakr: when q|t|/sqrt(dof) exceeds 1/f_crit, the bound is reached at R2 = 1 for the treatment
     from scipy.stats import t as student_t
+
     t_stat, dof = 50.0, 10
-    fq2 = t_stat ** 2 / dof
+    fq2 = t_stat**2 / dof
     fc2 = (abs(student_t.ppf(0.025, dof - 1)) / np.sqrt(dof - 1)) ** 2
     assert abs(robustness_value(t_stat, dof, alpha=0.05) - (fq2 - fc2) / (1 + fq2)) < 1e-12

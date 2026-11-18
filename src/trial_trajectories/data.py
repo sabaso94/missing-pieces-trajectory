@@ -3,6 +3,7 @@
 One row per patient. Treatment `treat`: 0 = zidovudine alone, 1 = one of the three newer regimens. CD4 counts
 at baseline (`cd40`), week 20 (`cd420`, complete) and week 96 (`cd496`, missing for about 37%).
 """
+
 from pathlib import Path
 
 import numpy as np
@@ -13,8 +14,23 @@ DATA_FILE = ROOT / "data" / "ACTG175.txt"
 N_PATIENTS = 2139
 
 # Baseline covariates only. `zprior` is the same for every patient; `strat` repeats `str2` and `preanti`.
-COVARIATES = ["age", "wtkg", "karnof", "cd40", "cd80", "preanti", "hemo", "homo", "drugs", "oprior", "z30",
-              "race", "gender", "str2", "symptom"]
+COVARIATES = [
+    "age",
+    "wtkg",
+    "karnof",
+    "cd40",
+    "cd80",
+    "preanti",
+    "hemo",
+    "homo",
+    "drugs",
+    "oprior",
+    "z30",
+    "race",
+    "gender",
+    "str2",
+    "symptom",
+]
 ARM_NAMES = {0: "zidovudine", 1: "zidovudine + didanosine", 2: "zidovudine + zalcitabine", 3: "didanosine"}
 
 

@@ -14,6 +14,7 @@
 Writes results/e3_dropout_model.csv, results/e3_dropout_profile.csv, results/e3_simulation.csv and
 results/e3_week96.csv.
 """
+
 import os
 
 for _var in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"]:
@@ -23,8 +24,8 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import brentq
 from scipy.special import expit
-from sklearn.model_selection import cross_val_predict, StratifiedKFold
 from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
 from trial_trajectories.data import COVARIATES, ROOT, covariate_matrix, load_trial
 from trial_trajectories.metrics import bootstrap_ci
@@ -37,7 +38,10 @@ N_MASKS = 500
 def who_drops_out(df: pd.DataFrame) -> pd.DataFrame:
     rows = []
     observed = df["observed96"].to_numpy()
-    for name, cols in [("baseline + arm", COVARIATES + ["treat"]), ("baseline + arm + week-20 CD4", HISTORY96 + ["treat"])]:
+    for name, cols in [
+        ("baseline + arm", [*COVARIATES, "treat"]),
+        ("baseline + arm + week-20 CD4", [*HISTORY96, "treat"]),
+    ]:
         h = df[cols].to_numpy(float)
         cv = StratifiedKFold(5, shuffle=True, random_state=0)
         p = cross_val_predict(dropout_model(h, observed), h, observed.astype(int), cv=cv, method="predict_proba")[:, 1]
@@ -49,8 +53,9 @@ def who_drops_out(df: pd.DataFrame) -> pd.DataFrame:
 
 def dropout_profile(df: pd.DataFrame) -> pd.DataFrame:
     g = df.groupby(["treat", "observed96"])
-    return g.agg(n=("y20", "size"), cd4_week0=("cd40", "mean"), cd4_week20=("cd420", "mean"),
-                 change_week20=("y20", "mean")).reset_index()
+    return g.agg(
+        n=("y20", "size"), cd4_week0=("cd40", "mean"), cd4_week20=("cd420", "mean"), change_week20=("y20", "mean")
+    ).reset_index()
 
 
 def _match_rate(lp: np.ndarray, rate: float) -> np.ndarray:
@@ -92,12 +97,27 @@ def simulate(df: pd.DataFrame) -> pd.DataFrame:
             observed = np.random.default_rng(1000 * k + draw).random(len(y)) < p_obs
             for method in METHODS:
                 for quantity, value in estimate(y, observed, x, t, method).items():
-                    rows.append({"mechanism": name, "draw": draw, "method": method, "quantity": quantity,
-                                 "est": value, "truth": truth[quantity]})
+                    rows.append(
+                        {
+                            "mechanism": name,
+                            "draw": draw,
+                            "method": method,
+                            "quantity": quantity,
+                            "est": value,
+                            "truth": truth[quantity],
+                        }
+                    )
     sims = pd.DataFrame(rows).assign(err=lambda d: d["est"] - d["truth"])
-    return sims.groupby(["mechanism", "method", "quantity"], sort=False).agg(
-        truth=("truth", "first"), bias=("err", "mean"), sd=("est", "std"),
-        rmse=("err", lambda e: np.sqrt((e ** 2).mean()))).reset_index()
+    return (
+        sims.groupby(["mechanism", "method", "quantity"], sort=False)
+        .agg(
+            truth=("truth", "first"),
+            bias=("err", "mean"),
+            sd=("est", "std"),
+            rmse=("err", lambda e: np.sqrt((e**2).mean())),
+        )
+        .reset_index()
+    )
 
 
 def week96(df: pd.DataFrame) -> pd.DataFrame:
@@ -105,17 +125,27 @@ def week96(df: pd.DataFrame) -> pd.DataFrame:
     level, change = df["cd496"].to_numpy(float), df["y96"].to_numpy(float)
     rows = []
     for method in METHODS:
-        def stats(idx):
+
+        def stats(idx, method=method):
             ti, hi, oi = t[idx], h[idx], observed[idx]
             lv, ch = estimate(level[idx], oi, hi, ti, method), estimate(change[idx], oi, hi, ti, method)
-            return np.array([lv["control mean"], lv["treated mean"], ch["control mean"], ch["treated mean"],
-                             ch["effect"]])
+            return np.array(
+                [lv["control mean"], lv["treated mean"], ch["control mean"], ch["treated mean"], ch["effect"]]
+            )
+
         point = stats(np.arange(len(t)))
         low, high = bootstrap_ci(stats, len(t), seed=96)
-        names = ["CD4 at week 96, zidovudine alone", "CD4 at week 96, newer regimens",
-                 "change to week 96, zidovudine alone", "change to week 96, newer regimens", "effect at week 96"]
-        rows += [{"method": method, "quantity": q, "est": p, "low": lo, "high": hi}
-                 for q, p, lo, hi in zip(names, point, low, high)]
+        names = [
+            "CD4 at week 96, zidovudine alone",
+            "CD4 at week 96, newer regimens",
+            "change to week 96, zidovudine alone",
+            "change to week 96, newer regimens",
+            "effect at week 96",
+        ]
+        rows += [
+            {"method": method, "quantity": q, "est": p, "low": lo, "high": hi}
+            for q, p, lo, hi in zip(names, point, low, high)
+        ]
     return pd.DataFrame(rows)
 
 
@@ -131,8 +161,14 @@ def main() -> None:
     w96 = week96(df)
     w96.to_csv(out / "e3_week96.csv", index=False, float_format="%.3f")
     print(model.groupby("model")["auroc_cv"].first().round(3).to_string())
-    print(model.assign(a=model.std_coef.abs()).sort_values("a", ascending=False).groupby("model").head(4)
-          [["model", "feature", "std_coef"]].round(3).to_string(index=False))
+    print(
+        model.assign(a=model.std_coef.abs())
+        .sort_values("a", ascending=False)
+        .groupby("model")
+        .head(4)[["model", "feature", "std_coef"]]
+        .round(3)
+        .to_string(index=False)
+    )
     print(profile.round(1).to_string(index=False))
     print(sims.round(2).to_string(index=False))
     print(w96.round(1).to_string(index=False))

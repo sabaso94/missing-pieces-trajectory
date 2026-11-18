@@ -5,12 +5,13 @@ and R2_tz of the treatment's (given covariates) changes the treatment coefficien
 se * sqrt(dof) * sqrt(R2_yz * R2_tz / (1 - R2_tz)). The robustness value is the share that a confounder
 would need to explain of both to remove the estimate (or its significance at level alpha).
 """
+
 import numpy as np
 from scipy.stats import t as student_t
 
 
 def partial_r2(t_stat: float, dof: int) -> float:
-    return t_stat ** 2 / (t_stat ** 2 + dof)
+    return t_stat**2 / (t_stat**2 + dof)
 
 
 def robustness_value(t_stat: float, dof: int, q: float = 1.0, alpha: float | None = None) -> float:
@@ -22,8 +23,8 @@ def robustness_value(t_stat: float, dof: int, q: float = 1.0, alpha: float | Non
     if f <= 0:
         return 0.0
     if f_crit > 0 and fq > 1 / f_crit:
-        return float((fq ** 2 - f_crit ** 2) / (1 + fq ** 2))
-    return float(0.5 * (np.sqrt(f ** 4 + 4 * f ** 2) - f ** 2))
+        return float((fq**2 - f_crit**2) / (1 + fq**2))
+    return float(0.5 * (np.sqrt(f**4 + 4 * f**2) - f**2))
 
 
 def bias_bound(r2_yz: float, r2_tz: float, se: float, dof: int) -> float:
